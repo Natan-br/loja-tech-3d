@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
 interface ProdutoCarrinho {
   id: number
@@ -34,15 +35,17 @@ export function CarrinhoProvider({ children }: { children: React.ReactNode }) {
 
   function adicionar(produto: ProdutoCarrinho) {
     setItens(prev => [...prev, produto])
-    alert('Produto adicionado ao carrinho!')
+    toast.success('🛒 Produto adicionado ao carrinho!')
   }
 
   function remover(index: number) {
     setItens(prev => prev.filter((_, i) => i !== index))
+    toast.error('Produto removido do carrinho')
   }
 
   function limpar() {
     setItens([])
+    toast('Carrinho limpo')
   }
 
   return (
