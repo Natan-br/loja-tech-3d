@@ -8,7 +8,7 @@ export default function CadastroPage() {
   const [senha, setSenha] = useState('')
 
   async function cadastrar() {
-    const resposta = await fetch('http://localhost:3333/cadastro', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/cadastro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome, email, senha })
