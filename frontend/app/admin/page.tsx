@@ -16,8 +16,8 @@ interface Produto {
 export default function AdminPage() {
   const [carregando, setCarregando] = useState(true)
   const [usuario, setUsuario] = useState<any>(null)
-
   const [produtos, setProdutos] = useState<Produto[]>([])
+
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
   const [preco, setPreco] = useState('')
@@ -48,7 +48,6 @@ export default function AdminPage() {
 
     setUsuario(usuarioConvertido)
     setCarregando(false)
-
     carregarProdutos()
     carregarDashboard()
   }, [])
@@ -66,27 +65,7 @@ export default function AdminPage() {
   async function carregarProdutos() {
     const resposta = await fetch(`${API_URL}/produtos`)
     const dados = await resposta.json()
-
     setProdutos(dados)
-  }
-
-  async function enviarImagem(arquivo: File) {
-    const formData = new FormData()
-    formData.append('imagem', arquivo)
-
-    const resposta = await fetch(`${API_URL}/upload`, {
-      method: 'POST',
-      body: formData
-    })
-
-    const dados = await resposta.json()
-
-    if (dados.arquivo) {
-      setImagem(dados.arquivo)
-      alert('Imagem enviada!')
-    } else {
-      alert('Erro ao enviar imagem')
-    }
   }
 
   function limparCampos() {
@@ -121,9 +100,7 @@ export default function AdminPage() {
     if (produtoEditandoId) {
       await fetch(`${API_URL}/produtos/${produtoEditandoId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosProduto)
       })
 
@@ -131,9 +108,7 @@ export default function AdminPage() {
     } else {
       await fetch(`${API_URL}/produtos`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosProduto)
       })
 
@@ -152,11 +127,7 @@ export default function AdminPage() {
     setPreco(String(produto.preco))
     setImagem(produto.imagem)
     setCategoria(produto.categoria || 'Geral')
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function excluirProduto(id: number) {
@@ -211,23 +182,17 @@ export default function AdminPage() {
       <div className="grid md:grid-cols-4 gap-6 mb-10">
         <div className="bg-gray-900 p-6 rounded-2xl border border-cyan-500/20">
           <h2 className="text-xl font-bold">📦 Produtos</h2>
-          <p className="text-5xl font-black text-cyan-400 mt-3">
-            {totalProdutos}
-          </p>
+          <p className="text-5xl font-black text-cyan-400 mt-3">{totalProdutos}</p>
         </div>
 
         <div className="bg-gray-900 p-6 rounded-2xl border border-cyan-500/20">
           <h2 className="text-xl font-bold">👤 Usuários</h2>
-          <p className="text-5xl font-black text-cyan-400 mt-3">
-            {totalUsuarios}
-          </p>
+          <p className="text-5xl font-black text-cyan-400 mt-3">{totalUsuarios}</p>
         </div>
 
         <div className="bg-gray-900 p-6 rounded-2xl border border-cyan-500/20">
           <h2 className="text-xl font-bold">🛒 Pedidos</h2>
-          <p className="text-5xl font-black text-cyan-400 mt-3">
-            {totalPedidos}
-          </p>
+          <p className="text-5xl font-black text-cyan-400 mt-3">{totalPedidos}</p>
         </div>
 
         <div className="bg-gray-900 p-6 rounded-2xl border border-cyan-500/20">
@@ -279,13 +244,9 @@ export default function AdminPage() {
           </select>
 
           <input
-            type="file"
-            accept="image/*"
-            onChange={e => {
-              if (e.target.files && e.target.files[0]) {
-                enviarImagem(e.target.files[0])
-              }
-            }}
+            placeholder="Nome da imagem. Ex: 1780096153378-Mouse.png"
+            value={imagem}
+            onChange={e => setImagem(e.target.value)}
             className="w-full p-3 mb-4 bg-black rounded border border-gray-700"
           />
 
@@ -296,7 +257,7 @@ export default function AdminPage() {
               </p>
 
               <img
-                src={`${API_URL}/imagens/${imagem}`}
+                src={`/imagens/${imagem}`}
                 alt="Preview"
                 className="w-40 h-40 object-cover rounded-xl border border-cyan-500/20"
               />
@@ -334,7 +295,7 @@ export default function AdminPage() {
             >
               <div className="flex gap-4 items-center">
                 <img
-                  src={`${API_URL}/imagens/${produto.imagem}`}
+                  src={`/imagens/${produto.imagem}`}
                   alt={produto.nome}
                   className="w-16 h-16 object-cover rounded-lg"
                 />
