@@ -18,14 +18,18 @@ mercadopago.configure({
 app.use(cors())
 app.use(express.json())
 
-const pastaImagens = path.join(__dirname, '../../frontend/public/imagens')
+const pastaImagens = path.join(__dirname, '../uploads')
 
 if (!fs.existsSync(pastaImagens)) {
   fs.mkdirSync(pastaImagens, { recursive: true })
 }
 
+app.use('/imagens', express.static(pastaImagens))
+
 const storage = multer.diskStorage({
-  destination: (req: any, file: any, cb: any) => cb(null, pastaImagens),
+  destination: (req: any, file: any, cb: any) => {
+    cb(null, pastaImagens)
+  },
   filename: (req: any, file: any, cb: any) => {
     const nomeUnico = Date.now() + '-' + file.originalname.replace(/\s/g, '-')
     cb(null, nomeUnico)
@@ -39,7 +43,9 @@ app.get('/', (req: any, res: any) => {
 })
 
 app.post('/upload', upload.single('imagem'), (req: any, res: any) => {
-  if (!req.file) return res.status(400).json({ erro: 'Nenhuma imagem enviada' })
+  if (!req.file) {
+    return res.status(400).json({ erro: 'Nenhuma imagem enviada' })
+  }
 
   res.json({ arquivo: req.file.filename })
 })
@@ -72,7 +78,9 @@ app.get('/produtos/:id', async (req: any, res: any) => {
     where: { id: Number(req.params.id) }
   })
 
-  if (!produto) return res.status(404).json({ erro: 'Produto não encontrado' })
+  if (!produto) {
+    return res.status(404).json({ erro: 'Produto não encontrado' })
+  }
 
   res.json(produto)
 })
@@ -86,7 +94,7 @@ app.post('/produtos', async (req: any, res: any) => {
       descricao,
       preco: Number(preco),
       imagem,
-      modelo3d,
+      modelo3d: modelo3d || '',
       categoria: categoria || 'Geral'
     }
   })
@@ -104,7 +112,7 @@ app.put('/produtos/:id', async (req: any, res: any) => {
       descricao,
       preco: Number(preco),
       imagem,
-      modelo3d,
+      modelo3d: modelo3d || '',
       categoria: categoria || 'Geral'
     }
   })
@@ -122,6 +130,10 @@ app.delete('/produtos/:id', async (req: any, res: any) => {
 
 app.post('/cadastro', async (req: any, res: any) => {
   const { nome, email, senha } = req.body
+
+  if (!nome || !email || !senha) {
+    return res.status(400).json({ erro: 'Preencha todos os campos' })
+  }
 
   const usuarioExiste = await prisma.usuario.findUnique({
     where: { email }
@@ -156,7 +168,9 @@ app.post('/login', async (req: any, res: any) => {
     where: { email }
   })
 
-  if (!usuario) return res.status(400).json({ erro: 'E-mail ou senha inválidos' })
+  if (!usuario) {
+    return res.status(400).json({ erro: 'E-mail ou senha inválidos' })
+  }
 
   const senhaCorreta = await bcrypt.compare(senha, usuario.senha)
 
@@ -215,9 +229,9 @@ app.post('/pagamento', async (req: any, res: any) => {
       }
     ],
     back_urls: {
-      success: 'https://www.google.com',
-      failure: 'https://www.google.com',
-      pending: 'https://www.google.com'
+      success: 'https://loja-tech-3d.vercel.app',
+      failure: 'https://loja-tech-3d.vercel.app',
+      pending: 'https://loja-tech-3d.vercel.app'
     },
     auto_return: 'approved'
   })
@@ -256,9 +270,9 @@ app.post('/pagamento-carrinho', async (req: any, res: any) => {
       currency_id: 'BRL'
     })),
     back_urls: {
-      success: 'https://www.google.com',
-      failure: 'https://www.google.com',
-      pending: 'https://www.google.com'
+      success: 'https://loja-tech-3d.vercel.app',
+      failure: 'https://loja-tech-3d.vercel.app',
+      pending: 'https://loja-tech-3d.vercel.app'
     },
     auto_return: 'approved'
   })
@@ -268,6 +282,8 @@ app.post('/pagamento-carrinho', async (req: any, res: any) => {
   })
 })
 
-app.listen(3333, () => {
-  console.log('Servidor rodando na porta 3333')
+const PORT = process.env.PORT || 3333
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`)
 })
