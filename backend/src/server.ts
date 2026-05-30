@@ -8,14 +8,7 @@ require('dotenv').config()
 const app = express()
 const prisma = new PrismaClient()
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}))
-
-app.options('*', cors())
-
+app.use(cors())
 app.use(express.json())
 
 mercadopago.configure({
@@ -28,53 +21,6 @@ app.get('/', (req: any, res: any) => {
 
 app.get('/teste-carrinho', (req: any, res: any) => {
   res.json({ ok: true, rota: 'pagamento-carrinho existe' })
-})
-
-app.post('/pagamento-carrinho', async (req: any, res: any) => {
-  try {
-    const { itens, usuarioId } = req.body
-
-    if (!itens || itens.length === 0) {
-      return res.status(400).json({ erro: 'Carrinho vazio' })
-    }
-
-    const total = itens.reduce((acc: number, item: any) => {
-      return acc + Number(item.preco)
-    }, 0)
-
-    if (usuarioId) {
-      await prisma.pedido.create({
-        data: {
-          usuarioId: Number(usuarioId),
-          produtos: JSON.stringify(itens),
-          total,
-          status: 'pendente'
-        }
-      })
-    }
-
-    const result = await mercadopago.preferences.create({
-      items: itens.map((item: any) => ({
-        id: String(item.id),
-        title: item.nome,
-        quantity: 1,
-        unit_price: Number(item.preco),
-        currency_id: 'BRL'
-      })),
-      back_urls: {
-        success: 'https://loja-tech-3d.vercel.app',
-        failure: 'https://loja-tech-3d.vercel.app',
-        pending: 'https://loja-tech-3d.vercel.app'
-      },
-      auto_return: 'approved'
-    })
-
-    res.json({
-      url: result.body.init_point || result.init_point
-    })
-  } catch (erro: any) {
-    res.status(500).json({ erro: erro.message })
-  }
 })
 
 app.get('/dashboard', async (req: any, res: any) => {
@@ -193,7 +139,11 @@ app.post('/cadastro', async (req: any, res: any) => {
     const senhaCriptografada = await bcrypt.hash(senha, 10)
 
     const usuario = await prisma.usuario.create({
-      data: { nome, email, senha: senhaCriptografada }
+      data: {
+        nome,
+        email,
+        senha: senhaCriptografada
+      }
     })
 
     res.json({
@@ -291,6 +241,53 @@ app.post('/pagamento', async (req: any, res: any) => {
           currency_id: 'BRL'
         }
       ],
+      back_urls: {
+        success: 'https://loja-tech-3d.vercel.app',
+        failure: 'https://loja-tech-3d.vercel.app',
+        pending: 'https://loja-tech-3d.vercel.app'
+      },
+      auto_return: 'approved'
+    })
+
+    res.json({
+      url: result.body.init_point || result.init_point
+    })
+  } catch (erro: any) {
+    res.status(500).json({ erro: erro.message })
+  }
+})
+
+app.post('/pagamento-carrinho', async (req: any, res: any) => {
+  try {
+    const { itens, usuarioId } = req.body
+
+    if (!itens || itens.length === 0) {
+      return res.status(400).json({ erro: 'Carrinho vazio' })
+    }
+
+    const total = itens.reduce((acc: number, item: any) => {
+      return acc + Number(item.preco)
+    }, 0)
+
+    if (usuarioId) {
+      await prisma.pedido.create({
+        data: {
+          usuarioId: Number(usuarioId),
+          produtos: JSON.stringify(itens),
+          total,
+          status: 'pendente'
+        }
+      })
+    }
+
+    const result = await mercadopago.preferences.create({
+      items: itens.map((item: any) => ({
+        id: String(item.id),
+        title: item.nome,
+        quantity: 1,
+        unit_price: Number(item.preco),
+        currency_id: 'BRL'
+      })),
       back_urls: {
         success: 'https://loja-tech-3d.vercel.app',
         failure: 'https://loja-tech-3d.vercel.app',
