@@ -1,5 +1,6 @@
 'use client'
 
+import Banner from './components/Banner'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCarrinho } from './CarrinhoContext'
