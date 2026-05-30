@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+const API_URL = 'https://loja-tech-3d-production.up.railway.app'
+
 interface Pedido {
   id: number
   produtos: string
@@ -38,11 +40,15 @@ export default function AdminPedidosPage() {
   }, [])
 
   async function carregarPedidos() {
-    const resposta = await fetch('http://localhost:3333/pedidos')
-    const dados = await resposta.json()
-
-    setPedidos(dados)
-    setCarregando(false)
+    try {
+      const resposta = await fetch(`${API_URL}/pedidos`)
+      const dados = await resposta.json()
+      setPedidos(dados)
+    } catch (erro) {
+      alert('Erro ao carregar pedidos')
+    } finally {
+      setCarregando(false)
+    }
   }
 
   function converterProdutos(produtos: string) {
@@ -54,7 +60,7 @@ export default function AdminPedidosPage() {
   }
 
   async function alterarStatus(id: number, status: string) {
-    await fetch(`http://localhost:3333/pedidos/${id}/status`, {
+    await fetch(`${API_URL}/pedidos/${id}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -118,7 +124,7 @@ export default function AdminPedidosPage() {
 
                   <div className="text-right">
                     <p className="text-cyan-400 text-2xl font-black">
-                      R$ {pedido.total.toFixed(2)}
+                      R$ {Number(pedido.total).toFixed(2)}
                     </p>
 
                     <span className="inline-block mt-2 bg-yellow-600 px-3 py-1 rounded-full text-sm">
