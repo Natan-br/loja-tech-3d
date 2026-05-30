@@ -3,6 +3,7 @@
 import Banner from './components/Banner'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 import { useCarrinho } from './CarrinhoContext'
 
 interface Produto {
@@ -40,6 +41,7 @@ export default function Home() {
   const [usuario, setUsuario] = useState<any>(null)
   const [pesquisa, setPesquisa] = useState('')
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todos')
+  const [menuAberto, setMenuAberto] = useState(false)
   const { itens, adicionar } = useCarrinho()
 
   useEffect(() => {
@@ -123,47 +125,92 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-950 text-white">
-      <nav className="fixed top-0 left-0 w-full z-50 bg-black/40 backdrop-blur-md border-b border-cyan-500/20 px-8 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-cyan-400">
-          ⚡ Loja Tech 3D
-        </h1>
+     <nav className="fixed top-0 left-0 w-full z-50 bg-black/40 backdrop-blur-md border-b border-cyan-500/20 px-6 py-4">
+  <div className="flex justify-between items-center">
+    <h1 className="text-2xl font-bold text-cyan-400">
+      ⚡ Loja Tech 3D
+    </h1>
 
-        <div className="flex gap-5 items-center">
-          <a href="#produtos" className="text-gray-300 hover:text-cyan-400">
-            Produtos
-          </a>
+    <div className="hidden md:flex gap-5 items-center">
+      <a href="#produtos" className="text-gray-300 hover:text-cyan-400">
+        Produtos
+      </a>
 
-          <a href="/carrinho" className="text-gray-300 hover:text-cyan-400">
-            🛒 Carrinho ({itens.length})
-          </a>
+      <a href="/carrinho" className="text-gray-300 hover:text-cyan-400">
+        🛒 Carrinho ({itens.length})
+      </a>
 
-          <a href="/meus-pedidos" className="text-gray-300 hover:text-cyan-400">
-            📦 Meus Pedidos
-          </a>
+      <a href="/meus-pedidos" className="text-gray-300 hover:text-cyan-400">
+        📦 Meus Pedidos
+      </a>
 
-          {usuario ? (
-            <div className="flex gap-3 items-center">
-              <span className="text-cyan-400 font-bold">
-                Olá, {usuario.nome}
-              </span>
+      {usuario ? (
+        <>
+          <span className="text-cyan-400 font-bold">
+            Olá, {usuario.nome}
+          </span>
 
-              <button
-                onClick={sair}
-                className="bg-red-600 hover:bg-red-500 text-white px-5 py-2 rounded-xl text-sm font-bold"
-              >
-                Sair
-              </button>
-            </div>
-          ) : (
-            <a
-              href="/login"
-              className="bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-2 rounded-xl text-sm font-bold"
-            >
-              Entrar
-            </a>
-          )}
-        </div>
-      </nav>
+          <button
+            onClick={sair}
+            className="bg-red-600 hover:bg-red-500 text-white px-5 py-2 rounded-xl text-sm font-bold"
+          >
+            Sair
+          </button>
+        </>
+      ) : (
+        <a
+          href="/login"
+          className="bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-2 rounded-xl text-sm font-bold"
+        >
+          Entrar
+        </a>
+      )}
+    </div>
+
+    <button
+      onClick={() => setMenuAberto(!menuAberto)}
+      className="md:hidden text-cyan-400"
+    >
+      {menuAberto ? <X size={30} /> : <Menu size={30} />}
+    </button>
+  </div>
+
+  {menuAberto && (
+    <div className="md:hidden mt-4 flex flex-col gap-4 bg-gray-900 p-5 rounded-2xl border border-cyan-500/20">
+      <a href="#produtos">Produtos</a>
+
+      <a href="/carrinho">
+        🛒 Carrinho ({itens.length})
+      </a>
+
+      <a href="/meus-pedidos">
+        📦 Meus Pedidos
+      </a>
+
+      {usuario ? (
+        <>
+          <span className="text-cyan-400">
+            Olá, {usuario.nome}
+          </span>
+
+          <button
+            onClick={sair}
+            className="bg-red-600 py-2 rounded-xl"
+          >
+            Sair
+          </button>
+        </>
+      ) : (
+        <a
+          href="/login"
+          className="bg-cyan-500 text-black py-2 rounded-xl text-center font-bold"
+        >
+          Entrar
+        </a>
+      )}
+    </div>
+  )}
+</nav>
 
       <section className="relative h-[560px] overflow-hidden flex items-center justify-center">
         <motion.img
