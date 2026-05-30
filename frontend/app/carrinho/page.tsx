@@ -18,7 +18,7 @@ export default function CarrinhoPage() {
 
     const usuario = JSON.parse(usuarioSalvo)
 
-    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/pagamento-carrinho', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
