@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+const API_URL = 'https://loja-tech-3d-production.up.railway.app'
+
 interface Produto {
   id: number
   nome: string
@@ -52,7 +54,7 @@ export default function AdminPage() {
   }, [])
 
   async function carregarDashboard() {
-    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/pedidos')
+    const resposta = await fetch(`${API_URL}/dashboard`)
     const dados = await resposta.json()
 
     setTotalProdutos(dados.produtos)
@@ -62,7 +64,7 @@ export default function AdminPage() {
   }
 
   async function carregarProdutos() {
-    const resposta = await fetch('http://localhost:3333/produtos')
+    const resposta = await fetch(`${API_URL}/produtos`)
     const dados = await resposta.json()
 
     setProdutos(dados)
@@ -72,7 +74,7 @@ export default function AdminPage() {
     const formData = new FormData()
     formData.append('imagem', arquivo)
 
-    const resposta = await fetch('http://localhost:3333/upload', {
+    const resposta = await fetch(`${API_URL}/upload`, {
       method: 'POST',
       body: formData
     })
@@ -82,6 +84,8 @@ export default function AdminPage() {
     if (dados.arquivo) {
       setImagem(dados.arquivo)
       alert('Imagem enviada!')
+    } else {
+      alert('Erro ao enviar imagem')
     }
   }
 
@@ -115,7 +119,7 @@ export default function AdminPage() {
     }
 
     if (produtoEditandoId) {
-      await fetch(`http://localhost:3333/produtos/${produtoEditandoId}`, {
+      await fetch(`${API_URL}/produtos/${produtoEditandoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -125,7 +129,7 @@ export default function AdminPage() {
 
       alert('Produto atualizado!')
     } else {
-      await fetch('http://localhost:3333/produtos', {
+      await fetch(`${API_URL}/produtos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -158,7 +162,7 @@ export default function AdminPage() {
   async function excluirProduto(id: number) {
     if (!confirm('Excluir produto?')) return
 
-    await fetch(`http://localhost:3333/produtos/${id}`, {
+    await fetch(`${API_URL}/produtos/${id}`, {
       method: 'DELETE'
     })
 
@@ -292,7 +296,7 @@ export default function AdminPage() {
               </p>
 
               <img
-                src={`/imagens/${imagem}`}
+                src={`${API_URL}/imagens/${imagem}`}
                 alt="Preview"
                 className="w-40 h-40 object-cover rounded-xl border border-cyan-500/20"
               />
@@ -330,7 +334,7 @@ export default function AdminPage() {
             >
               <div className="flex gap-4 items-center">
                 <img
-                  src={`/imagens/${produto.imagem}`}
+                  src={`${API_URL}/imagens/${produto.imagem}`}
                   alt={produto.nome}
                   className="w-16 h-16 object-cover rounded-lg"
                 />

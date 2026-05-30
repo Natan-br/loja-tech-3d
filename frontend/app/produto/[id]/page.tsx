@@ -17,7 +17,7 @@ export default function ProdutoPage() {
   const [produto, setProduto] = useState<Produto | null>(null)
 
   useEffect(() => {
-    fetch(`http://localhost:3333/produtos/${id}`)
+    fetch(`https://loja-tech-3d-production.up.railway.app/produtos/${id}`)
       .then(res => res.json())
       .then(data => setProduto(data))
   }, [id])
@@ -25,7 +25,7 @@ export default function ProdutoPage() {
   async function comprar() {
     if (!produto) return
 
-    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/produto/${id}', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/pagamento', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome: produto.nome, preco: produto.preco })
