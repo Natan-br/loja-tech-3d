@@ -25,7 +25,7 @@ export default function ProdutoPage() {
   async function comprar() {
     if (!produto) return
 
-    const resposta = await fetch('http://localhost:3333/pagamento', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/produto/${id}', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome: produto.nome, preco: produto.preco })

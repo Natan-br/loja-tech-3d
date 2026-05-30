@@ -24,7 +24,7 @@ export default function MeusPedidosPage() {
 
     const usuario = JSON.parse(usuarioSalvo)
 
-    fetch(`http://localhost:3333/pedidos/usuario/${usuario.id}`)
+    fetch(`https://loja-tech-3d-production.up.railway.app/criar-pedido?usuarioId=${usuario.id}`)
       .then(res => res.json())
       .then(data => {
         setPedidos(data)

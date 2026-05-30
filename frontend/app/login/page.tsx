@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [senha, setSenha] = useState('')
 
   async function entrar() {
-    const resposta = await fetch('http://localhost:3333/login', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, senha })

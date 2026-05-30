@@ -42,7 +42,7 @@ export default function Home() {
   const { itens, adicionar } = useCarrinho()
 
   useEffect(() => {
-    fetch('http://localhost:3333/produtos')
+    fetch('https://loja-tech-3d-production.up.railway.app/produtos')
       .then(res => res.json())
       .then(data => setProdutos(data))
   }, [])
@@ -93,7 +93,7 @@ export default function Home() {
   }
 
   async function comprar(nome: string, preco: number) {
-    const resposta = await fetch('http://localhost:3333/pagamento', {
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/pagamento', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome, preco })

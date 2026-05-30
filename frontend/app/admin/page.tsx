@@ -52,7 +52,7 @@ export default function AdminPage() {
   }, [])
 
   async function carregarDashboard() {
-    const resposta = await fetch('http://localhost:3333/dashboard')
+    const resposta = await fetch('https://loja-tech-3d-production.up.railway.app/pedidos')
     const dados = await resposta.json()
 
     setTotalProdutos(dados.produtos)
