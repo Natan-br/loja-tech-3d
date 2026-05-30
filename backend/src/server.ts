@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const express = require('express')
 const cors = require('cors')
 const { PrismaClient } = require('@prisma/client')
-const mercadopago = require('mercadopago')
+//const mercadopago = require('mercadopago')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
@@ -11,9 +11,9 @@ require('dotenv').config()
 const app = express()
 const prisma = new PrismaClient()
 
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN
-})
+// mercadopago.configure({
+//   access_token: process.env.MP_ACCESS_TOKEN
+// })
 
 app.use(cors())
 app.use(express.json())
